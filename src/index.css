@@ -1,0 +1,31 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --font-roboto: "Roboto", "serif";
+  --color-primary: #212121;
+  --color-prime: #171717;
+  --color-secondary: #3f3f3f;
+  --color-pure: #b4b4b4;
+  --color-lightpure: #ececec;
+}
+
+body {
+  font-family: "Roboto", "serif";
+  padding: 0;
+  margin: 0;
+  overflow-x: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 0px;
+  background-color: #212121;
+  height: 0px;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 16px;
+  -webkit-box-shadow: inset 0 0 6px #02191d;
+  background-color: transparent;
+}
