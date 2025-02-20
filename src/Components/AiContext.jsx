@@ -28,7 +28,6 @@ export const TranslatorProvider = ({ children }) => {
         setTargetLanguage,
         downloadingLanguage,
         setDownloadingLanguage,
-        // sendMessage,
       }}
     >
       {children}

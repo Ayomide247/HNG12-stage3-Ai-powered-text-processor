@@ -20,7 +20,7 @@ const Dashboard = () => {
         <main className="flex flex-col md:items-center justify-between lg:h-[60%] p-4 ">
           <div className="  flex flex-col justify-between">
             <h1 className="text-[30px] font-semibold text-lightpure grid place-content-center">
-              What's in your mind?
+              What's on your mind?
             </h1>
 
             <section>

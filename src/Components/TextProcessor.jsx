@@ -48,10 +48,7 @@ const TextProcessor = () => {
     }
   };
 
-  if ("ai" in self && "translator" in self.ai) {
-    // console.log("AI DEY");
-    // The Translator API is supported.
-  }
+ 
   const translateLanguage = async (
     text,
     sourceLang = "en",
@@ -79,7 +76,6 @@ const TextProcessor = () => {
         monitor(m) {
           m.addEventListener("downloadprogress", (e) => {
             setDownloadingLanguage(false);
-            // console.log(`Downloaded ${e.loaded} of ${e.total} bytes`);
           });
         },
       });
@@ -91,11 +87,10 @@ const TextProcessor = () => {
         targetLanguage: targetLang,
       });
       const response = await translator.translate(messages);
-      console.log(response);
+
       setTranslatedText(response);
     }
   };
-  // translateLanguage();
 
   const translateText = async (text, targetLang = "en") => {
     const API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
@@ -116,33 +111,12 @@ const TextProcessor = () => {
     }
   };
 
-  // const summarizeText = async (text) => {
-  //   const API_KEY = import.meta.env.VITE_APP_SUMMARIZER_API_KEY;
-  //   const url =
-  //     "https://api-inference.huggingface.co/models/facebook/bart-large-cnn";
-  //   try {
-  //     const response = await fetch(url, {
-  //       method: "POST",
-  //       headers: {
-  //         Authorization: `Bearer ${API_KEY}`,
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ inputs: text, max_length: 150 }),
-  //     });
-  //     const data = await response.json();
-  //     console.log(data);
-  //     setSummary(data[0].summary_text);
-  //   } catch (error) {
-  //     console.error("Summarization Error:", error);
-  //   }
-  // };
-
   const handleInput = async (e) => {
     e.preventDefault();
     if (inputText.trim() === "");
     setMessages(inputText);
     await translateText(inputText);
-    // await summarizeText(inputText);
+   
     setInputText("");
   };
 
@@ -174,7 +148,7 @@ const TextProcessor = () => {
                 <div className="flex gap-1 items-center rounded-full border border-secondary w-fit p-2 cursor-pointer hover:bg-secondary transition ease-in duration-300 shadow-lg">
                   <TbWorld size={18} />
                   <select
-                    // value={selected}
+                  
                     onChange={(e) => setTargetLanguage(e.target.value)}
                     className="bg-transparent text-pure outline-none cursor-pointer font-light"
                   >
