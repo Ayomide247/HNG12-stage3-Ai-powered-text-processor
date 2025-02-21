@@ -28,9 +28,7 @@ const Dashboard = () => {
                 ""
               ) : (
                 <div className=" mt-20">
-                  <p className="md:w-[50rem] h-[15rem overflow-scroll ">
-                    {messages}
-                  </p>
+                  <p className="md:w-[50rem]  overflow-scroll ">{messages}</p>
                   <div className="mb-4 p-2 border border-gray-700 w-fit rounded-lg text-sm text-pure">
                     <p>
                       <strong>Detected Language: </strong>
@@ -49,7 +47,7 @@ const Dashboard = () => {
               ) : (
                 <div className="shadow mt-20">
                   <div>Translation: </div>
-                  <p className="md:w-[50rem] h-[15rem] overflow-scroll ">
+                  <p className="md:w-[50rem]  overflow-scroll ">
                     {translatedText}
                   </p>
                 </div>
@@ -60,9 +58,7 @@ const Dashboard = () => {
               ) : (
                 <div className="shadow mt-20">
                   <div>Summary (Max 150 chars):</div>
-                  <p className="md:w-[50rem] h-[15rem] overflow-scroll ">
-                    {summary}
-                  </p>
+                  <p className="md:w-[50rem] overflow-scroll ">{summary}</p>
                 </div>
               )}
             </section>
