@@ -4,15 +4,7 @@ import { getLanguageName } from "../utils/helpers";
 import { useTranslator } from "../Components/AiContext";
 
 const Dashboard = () => {
-  const {
-    inputText,
-    setInputText,
-    messages,
-    detectedLanguage,
-    translatedText,
-    summary,
-    downloadingLanguage,
-  } = useTranslator();
+  const { store } = useTranslator();
   return (
     <div className="flex font-roboto ">
       <div className="flex-1 min-h-screen text-pure bg-primary">
@@ -24,41 +16,34 @@ const Dashboard = () => {
             </h1>
 
             <section>
-              {messages === "" ? (
+              {store.messages === "" ? (
                 ""
               ) : (
                 <div className=" mt-20">
-                  <p className="md:w-[50rem]  overflow-scroll ">{messages}</p>
+                  <p className="md:w-[50rem]  overflow-scroll ">
+                    {store.messages}
+                  </p>
                   <div className="mb-4 p-2 border border-gray-700 w-fit rounded-lg text-sm text-pure">
                     <p>
                       <strong>Detected Language: </strong>
-                      {getLanguageName(detectedLanguage)
-                        ? getLanguageName(detectedLanguage)
-                        : detectedLanguage}
+                      {getLanguageName(store.detectedLanguage)
+                        ? getLanguageName(store.detectedLanguage)
+                        : store.detectedLanguage}
                     </p>
                   </div>
                 </div>
               )}
 
-              {downloadingLanguage ? (
+              {store.downloadingLanguage ? (
                 <h2>Loading...</h2>
-              ) : translatedText === "" ? (
+              ) : store.translatedText === "" ? (
                 ""
               ) : (
                 <div className="shadow mt-20">
                   <div>Translation: </div>
                   <p className="md:w-[50rem]  overflow-scroll ">
-                    {translatedText}
+                    {store.translatedText}
                   </p>
-                </div>
-              )}
-
-              {summary === "" ? (
-                ""
-              ) : (
-                <div className="shadow mt-20">
-                  <div>Summary (Max 150 chars):</div>
-                  <p className="md:w-[50rem] overflow-scroll ">{summary}</p>
                 </div>
               )}
             </section>

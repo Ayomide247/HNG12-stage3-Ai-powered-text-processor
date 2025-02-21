@@ -8,32 +8,22 @@ import { languages } from "../utils/data";
 import { useTranslator } from "./AiContext";
 
 const TextProcessor = () => {
-  const {
-    messages,
-    setMessages,
-    inputText,
-    setInputText,
-    detectedLanguage,
-    setDetectedLanguage,
-    translatedText,
-    setTranslatedText,
-    summary,
-    setSummary,
-    targetLanguage,
-    setTargetLanguage,
-    setDownloadingLanguage,
-  } = useTranslator();
-  const detectedLanguageRef = useRef("");
+  const { store, setStore } = useTranslator();
 
   useEffect(() => {
-    if (messages.trim() !== "") {
-      detectLanguage(messages);
+    if (store.messages.trim() !== "") {
+      detectLanguage(store.messages);
     }
-  }, [messages]);
+  }, [store.messages]);
 
   const detectLanguage = async (text) => {
     if (!("ai" in window) || !("languageDetector" in window.ai)) {
-      console.error("Language Detector API is not available in this browser.");
+      setStore((prevState) => {
+        return {
+          ...prevState,
+          error: "Language Detector API is not available in this browser.",
+        };
+      });
       return;
     }
     try {
@@ -41,18 +31,28 @@ const TextProcessor = () => {
       await detector.ready;
       const results = await detector.detect(text);
       if (results.length > 0) {
-        setDetectedLanguage(results[0].detectedLanguage);
+        // ;
+        setStore((prevState) => {
+          return {
+            ...prevState,
+            detectedLanguage: results[0].detectedLanguage,
+          };
+        });
       }
     } catch (error) {
-      console.error("Error during language detection:", error);
+      setStore((prevState) => {
+        return {
+          ...prevState,
+          error: "Error during language detection:",
+        };
+      });
     }
   };
 
- 
   const translateLanguage = async (
     text,
     sourceLang = "en",
-    targetLang = targetLanguage
+    targetLang = store.targetLanguage
   ) => {
     const translatorCapabilities = await self.ai.translator.capabilities();
     const isAvailable = translatorCapabilities.languagePairAvailable(
@@ -65,17 +65,32 @@ const TextProcessor = () => {
         sourceLanguage: sourceLang,
         targetLanguage: targetLang,
       });
-      const response = await translator.translate(messages);
-      setTranslatedText(response);
+      const response = await translator.translate(store.messages);
+      setStore((prevState) => {
+        return {
+          ...prevState,
+          translatedText: response,
+        };
+      });
     };
     if (isAvailable === "after-download") {
-      setDownloadingLanguage(true);
+      setStore((prevState) => {
+        return {
+          ...prevState,
+          downloadingLanguage: true,
+        };
+      });
       await self.ai.translator.create({
         sourceLanguage: sourceLang,
         targetLanguage: targetLang,
         monitor(m) {
           m.addEventListener("downloadprogress", (e) => {
-            setDownloadingLanguage(false);
+            setStore((prevState) => {
+              return {
+                ...prevState,
+                downloadingLanguage: false,
+              };
+            });
           });
         },
       });
@@ -86,38 +101,27 @@ const TextProcessor = () => {
         sourceLanguage: sourceLang,
         targetLanguage: targetLang,
       });
-      const response = await translator.translate(messages);
+      const response = await translator.translate(store.messages);
 
-      setTranslatedText(response);
-    }
-  };
-
-  const translateText = async (text, targetLang = "en") => {
-    const API_KEY = import.meta.env.VITE_APP_GOOGLE_API_KEY;
-    const url = `https://translation.googleapis.com/language/translate/v2?key=${API_KEY}`;
-    try {
-      const response = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ q: text, target: targetLang }),
+      setStore((prevState) => {
+        return {
+          ...prevState,
+          translatedText: response,
+        };
       });
-
-      const data = await response.json();
-      console.log(data);
-
-      setTranslatedText(data.data.translations[0].translatedText);
-    } catch (error) {
-      console.error("Translation Error:", error);
     }
   };
 
   const handleInput = async (e) => {
     e.preventDefault();
-    if (inputText.trim() === "");
-    setMessages(inputText);
-    await translateText(inputText);
-   
-    setInputText("");
+    if (store.inputText.trim() === "");
+    setStore((prevState) => {
+      return {
+        ...prevState,
+        messages: store.inputText,
+        inputText: "",
+      };
+    });
   };
 
   return (
@@ -126,15 +130,27 @@ const TextProcessor = () => {
         rows={5}
         placeholder="Enter your message here"
         className="w-full focus:outline-none p-2"
-        value={inputText}
-        onChange={(e) => setInputText(e.target.value)}
+        value={store.inputText}
+        onChange={(e) => {
+          setStore((prevState) => {
+            return {
+              ...prevState,
+              inputText: e.target.value,
+            };
+          });
+        }}
         required
       />
+      {/* {!isAvailable ? (
+        <p>Language Detector is not available on this browser</p>
+      ) : (
+        ""
+      )} */}
       <div className="mt-5 flex flex-wrap items-center justify-between w-full p-2">
         <div className="flex items-center justify-center space-x-2 gap-1">
-          {getStrLength(inputText) > 9 && (
+          {getStrLength(store.inputText) > 9 && (
             <div
-              onClick={() => summarizeText(messages)}
+              // onClick={() => summarizeText(messages)}
               className="flex gap-1 items-center rounded-full border border-secondary w-fit p-2 cursor-pointer bg-secondary transition ease-in duration-300 shadow-lg"
             >
               <FaRegLightbulb className="" />
@@ -142,14 +158,20 @@ const TextProcessor = () => {
             </div>
           )}
 
-          {detectedLanguage && (
+          {store.detectedLanguage && (
             <div className="flex items-center gap-3">
               <div className="relative inline-block">
                 <div className="flex gap-1 items-center rounded-full border border-secondary w-fit p-2 cursor-pointer hover:bg-secondary transition ease-in duration-300 shadow-lg">
                   <TbWorld size={18} />
                   <select
-                  
-                    onChange={(e) => setTargetLanguage(e.target.value)}
+                    onChange={(e) =>
+                      setStore((prevState) => {
+                        return {
+                          ...prevState,
+                          targetLanguage: e.target.value,
+                        };
+                      })
+                    }
                     className="bg-transparent text-pure outline-none cursor-pointer font-light"
                   >
                     {languages.map((lang) => (
@@ -157,7 +179,8 @@ const TextProcessor = () => {
                         key={lang.value}
                         value={lang.value}
                         className="bg-primary text-pure"
-                        selected={targetLanguage === lang.value}
+                        selected={store.targetLanguage === lang.value}
+                        disabled={lang.label === "English"}
                       >
                         {lang.label}
                       </option>
@@ -166,10 +189,10 @@ const TextProcessor = () => {
                 </div>
               </div>
               <div
-                onClick={() => translateLanguage(inputText)}
+                onClick={() => translateLanguage(store.inputText)}
                 className="flex gap-1 items-center rounded-full border border-secondary w-fit p-2 px-4 cursor-pointer bg-secondary transition ease-in duration-300 shadow-lg"
               >
-                <TbWorld className="" />
+                {/* <TbWorld className="" /> */}
                 <p className="font-light">Translate</p>
               </div>
             </div>
