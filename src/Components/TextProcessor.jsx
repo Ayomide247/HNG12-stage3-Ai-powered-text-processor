@@ -33,20 +33,18 @@ const TextProcessor = () => {
       setStore((prevState) => {
         return {
           ...prevState,
-          error: () => {
-            toast.error(
-              "Language Detector API is not supported on this browser.",
-              {
-                position: "top-right",
-                autoClose: 3000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                theme: "light",
-              }
-            );
-          },
+          error: toast.error(
+            "Language Detector API is not supported on this browser.",
+            {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              theme: "light",
+            }
+          ),
         };
       });
       return;
@@ -56,7 +54,6 @@ const TextProcessor = () => {
       await detector.ready;
       const results = await detector.detect(text);
       if (results.length > 0) {
-        // ;
         setStore((prevState) => {
           return {
             ...prevState,
@@ -68,17 +65,15 @@ const TextProcessor = () => {
       setStore((prevState) => {
         return {
           ...prevState,
-          error: () => {
-            toast.error("Error during language detection", {
-              position: "top-right",
-              autoClose: 3000,
-              hideProgressBar: false,
-              closeOnClick: true,
-              pauseOnHover: true,
-              draggable: true,
-              theme: "light",
-            });
-          },
+          error: toast.error("Error during language detection", {
+            position: "top-right",
+            autoClose: 3000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            theme: "light",
+          }),
         };
       });
     }
@@ -191,7 +186,7 @@ const TextProcessor = () => {
 
       <div className="mt-5 flex flex-wrap items-center justify-between w-full p-2">
         <div className="flex items-center justify-center space-x-2 gap-1">
-          {getStrLength(store.inputText) > 9 && (
+          {getStrLength(store.inputText) >= 150 && (
             <div
               onClick={showToast}
               className="flex gap-1 items-center rounded-full border border-secondary w-fit p-2 cursor-pointer bg-secondary transition ease-in duration-300 shadow-lg"

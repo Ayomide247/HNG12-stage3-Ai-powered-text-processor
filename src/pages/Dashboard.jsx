@@ -27,9 +27,9 @@ const Dashboard = () => {
                   <div className="mb-4 p-2 border border-gray-700 w-fit rounded-lg text-sm text-pure">
                     <p>
                       <strong>Detected Language: </strong>
-                      {getLanguageName(store.detectedLanguage)
-                        ? getLanguageName(store.detectedLanguage)
-                        : store.detectedLanguage}
+                      {getLanguageName(store?.detectedLanguage)
+                        ? getLanguageName(store?.detectedLanguage)
+                        : ""}
                     </p>
                   </div>
                 </div>
