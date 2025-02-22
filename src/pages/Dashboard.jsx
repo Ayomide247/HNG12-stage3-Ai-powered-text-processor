@@ -5,6 +5,7 @@ import { useTranslator } from "../Components/AiContext";
 
 const Dashboard = () => {
   const { store } = useTranslator();
+
   return (
     <div className="flex font-roboto ">
       <div className="flex-1 min-h-screen text-pure bg-primary">
@@ -47,6 +48,7 @@ const Dashboard = () => {
                 </div>
               )}
             </section>
+
             <section className="flex flex-col justify-between bg-[#303030] rounded-2xl w-full px-2 py-3 mt-20">
               <TextProcessor />
             </section>

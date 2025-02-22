@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FaPlus } from "react-icons/fa6";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { TbWorld } from "react-icons/tb";
 import { FaRegLightbulb } from "react-icons/fa6";
 import { FaArrowUp } from "react-icons/fa";
@@ -9,6 +10,17 @@ import { useTranslator } from "./AiContext";
 
 const TextProcessor = () => {
   const { store, setStore } = useTranslator();
+  const showToast = () => {
+    toast.error("Summarizer API is not available", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      theme: "light",
+    });
+  };
 
   useEffect(() => {
     if (store.messages.trim() !== "") {
@@ -21,7 +33,20 @@ const TextProcessor = () => {
       setStore((prevState) => {
         return {
           ...prevState,
-          error: "Language Detector API is not available in this browser.",
+          error: () => {
+            toast.error(
+              "Language Detector API is not supported on this browser.",
+              {
+                position: "top-right",
+                autoClose: 3000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                theme: "light",
+              }
+            );
+          },
         };
       });
       return;
@@ -43,7 +68,17 @@ const TextProcessor = () => {
       setStore((prevState) => {
         return {
           ...prevState,
-          error: "Error during language detection:",
+          error: () => {
+            toast.error("Error during language detection", {
+              position: "top-right",
+              autoClose: 3000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              theme: "light",
+            });
+          },
         };
       });
     }
@@ -59,6 +94,18 @@ const TextProcessor = () => {
       sourceLang,
       targetLang
     );
+    if (!isAvailable) {
+      toast.error("Language translator is not supported on this Browser", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
+      return;
+    }
 
     const translate = async () => {
       const translator = await self.ai.translator.create({
@@ -141,18 +188,15 @@ const TextProcessor = () => {
         }}
         required
       />
-      {/* {!isAvailable ? (
-        <p>Language Detector is not available on this browser</p>
-      ) : (
-        ""
-      )} */}
+
       <div className="mt-5 flex flex-wrap items-center justify-between w-full p-2">
         <div className="flex items-center justify-center space-x-2 gap-1">
           {getStrLength(store.inputText) > 9 && (
             <div
-              // onClick={() => summarizeText(messages)}
+              onClick={showToast}
               className="flex gap-1 items-center rounded-full border border-secondary w-fit p-2 cursor-pointer bg-secondary transition ease-in duration-300 shadow-lg"
             >
+              <ToastContainer />
               <FaRegLightbulb className="" />
               <p className="font-light">Summarize</p>
             </div>
@@ -192,9 +236,9 @@ const TextProcessor = () => {
                 onClick={() => translateLanguage(store.inputText)}
                 className="flex gap-1 items-center rounded-full border border-secondary w-fit p-2 px-4 cursor-pointer bg-secondary transition ease-in duration-300 shadow-lg"
               >
-                {/* <TbWorld className="" /> */}
                 <p className="font-light">Translate</p>
               </div>
+              <ToastContainer />
             </div>
           )}
         </div>
